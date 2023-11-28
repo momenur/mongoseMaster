@@ -84,3 +84,4 @@ const studentSchema = new Schema<Student>({
 
 // Creating Model
 export const StudentModel = model<Student>('Student', studentSchema);
+// end the section
