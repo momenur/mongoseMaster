@@ -11,7 +11,7 @@ app.use(cors());
 app.use('/api/v1/students', StudentRoutes);
 
 const getAController = (req: Request, res: Response) => {
-  res.send('Hello World');
+  res.send('Hellow First Project ');
 };
 
 app.get('/', getAController);

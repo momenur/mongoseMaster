@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
-
+// Controller Is Start
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
