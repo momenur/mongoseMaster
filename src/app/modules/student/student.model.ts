@@ -1,4 +1,5 @@
-import { Model, Schema, model } from 'mongoose';
+/* eslint-disable @typescript-eslint/no-this-alias */
+import { Schema, model } from 'mongoose';
 import validator from 'validator';
 import {
   StudentMethods,
@@ -8,6 +9,8 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const UserNameSchema = new Schema<TUserName>({
   firstName: {
@@ -18,7 +21,6 @@ const UserNameSchema = new Schema<TUserName>({
       validator: function (value: string) {
         const firstNameStr =
           value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-        console.log(firstNameStr);
         return firstNameStr === value;
       },
       message: '{VALUE} is not in capitalize Formate',
@@ -81,6 +83,12 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 
 const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
+  password: {
+    type: String,
+    required: true,
+    unique: true,
+    maxlength: [20, 'password Must be less then 20 char'],
+  },
   name: {
     type: UserNameSchema,
     required: [true, 'Name Filed Is Required'],
@@ -125,6 +133,24 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
     enum: ['active', 'blocked'],
     default: 'active',
   },
+});
+
+// pre save middleware || Hook : will work on before create() || save()
+studentSchema.pre('save', async function (next) {
+  // console.log(this, 'Pre Hook is Called');
+  // hashing password and save into db
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
+});
+
+// post save middleware || Hook : will  call after the create() || save()
+studentSchema.post('save', function (user, next) {
+  user.password = '';
+  next();
 });
 
 studentSchema.methods.isUserExists = async function (id: string) {
