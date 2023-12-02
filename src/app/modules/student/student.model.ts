@@ -1,26 +1,28 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import validator from 'validator';
 import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  UserName,
+  StudentMethods,
+  StudentModel,
+  TGuardian,
+  TLocalGuardian,
+  TStudent,
+  TUserName,
 } from './student.interface';
 
-const UserNameSchema = new Schema<UserName>({
+const UserNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     required: [true, 'First Name is Required'],
     trim: true,
-    // validate: {
-    //   validator: function (value: string) {
-    //     const firstNameStr =
-    //       value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-    //     console.log(firstNameStr);
-    //     return firstNameStr === value;
-    //   },
-    //   message: '{VALUE} is not in capitalize Formate',
-    // },
+    validate: {
+      validator: function (value: string) {
+        const firstNameStr =
+          value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+        console.log(firstNameStr);
+        return firstNameStr === value;
+      },
+      message: '{VALUE} is not in capitalize Formate',
+    },
   },
   middleName: {
     type: String,
@@ -35,7 +37,7 @@ const UserNameSchema = new Schema<UserName>({
   },
 });
 
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
     required: true,
@@ -62,7 +64,7 @@ const guardianSchema = new Schema<Guardian>({
   },
 });
 
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -77,7 +79,7 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
   name: {
     type: UserNameSchema,
@@ -125,6 +127,8 @@ const studentSchema = new Schema<Student>({
   },
 });
 
-// Creating Model
-export const StudentModel = model<Student>('Student', studentSchema);
-// end the section
+studentSchema.methods.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);

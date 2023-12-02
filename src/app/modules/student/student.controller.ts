@@ -26,10 +26,10 @@ const createStudent = async (req: Request, res: Response) => {
       message: 'Student is Created successfully',
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Student is not Created successfully',
+      message: error.message || 'Student is not Created successfully',
       error: error,
     });
   }
