@@ -9,8 +9,6 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const UserNameSchema = new Schema<TUserName>({
   firstName: {
@@ -82,12 +80,12 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 });
 
 const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
-  id: { type: String, required: true, unique: true },
-  password: {
-    type: String,
-    required: true,
+  id: { type: String, required: [true, 'ID is required'], unique: true },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User ID is required'],
     unique: true,
-    maxlength: [20, 'password Must be less then 20 char'],
+    ref: 'User',
   },
   name: {
     type: UserNameSchema,
@@ -128,29 +126,10 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
     required: true,
   },
   profileImg: { type: String },
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
+  isDeleted: {
+    type: Boolean,
+    default: false,
   },
-});
-
-// pre save middleware || Hook : will work on before create() || save()
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'Pre Hook is Called');
-  // hashing password and save into db
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-
-// post save middleware || Hook : will  call after the create() || save()
-studentSchema.post('save', function (user, next) {
-  user.password = '';
-  next();
 });
 
 studentSchema.methods.isUserExists = async function (id: string) {
