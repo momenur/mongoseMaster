@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import { UserService } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
+
 const createStudent: RequestHandler = async (req, res, next) => {
   try {
     const { password, student: studentData } = req.body;
