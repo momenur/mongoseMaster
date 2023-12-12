@@ -37,7 +37,6 @@ const userSchema = new Schema<TUser>(
   },
 );
 
-// pre save middleware || Hook : will work on before create() || save()
 userSchema.pre('save', async function (next) {
   const user = this;
   user.password = await bcrypt.hash(
