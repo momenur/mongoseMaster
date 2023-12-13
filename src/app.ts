@@ -8,11 +8,11 @@ import notFound from './app/middlwares/notFound';
 import router from './app/routes';
 const app: Application = express();
 
-//Parsers
+//Parsers is here
 app.use(express.json());
 app.use(cors());
 
-// Application Routes
+// Application Routes is here
 app.use('/api/v1', router);
 
 const test = (req: Request, res: Response) => {
