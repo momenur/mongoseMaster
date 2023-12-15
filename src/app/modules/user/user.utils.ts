@@ -17,7 +17,6 @@ const findLastStudentId = async () => {
 
 // Year semesterCode 4 digit Number
 export const generateStudentId = async (payLoad: TAcademicSemester) => {
-  // At the First Time
   let currentId = (0).toString();
   const lastStudentId = await findLastStudentId();
   const lastStudentSemesterCode = lastStudentId?.substring(4, 6);
