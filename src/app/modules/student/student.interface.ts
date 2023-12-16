@@ -19,6 +19,8 @@ export type TLocalGuardian = {
   contactNo: string;
   address: string;
 };
+
+// student interface is start
 export type TStudent = {
   id: string;
   user: Types.ObjectId;
