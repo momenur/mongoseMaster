@@ -20,3 +20,5 @@ router.patch(
 );
 
 router.get('/', AcademicFacultyControllers.getAllAcademicFaculties);
+
+export const AcademicFacultyRouts = router;
